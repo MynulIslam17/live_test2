@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Homepage extends StatefulWidget {
@@ -13,6 +12,31 @@ class _HomepageState extends State<Homepage> {
   final TextEditingController numberController = TextEditingController();
 
   List<Map<String, String>> contacts = [];
+
+  void _showDeleteDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Confirmation"),
+        content: Text("Are you sure you want to delete this contact?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Cancel
+            child: Icon(Icons.close),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                contacts.removeAt(index);
+              });
+              Navigator.pop(context); // Close dialog
+            },
+            child: Icon(Icons.delete),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,19 +94,13 @@ class _HomepageState extends State<Homepage> {
               child: ListView.builder(
                 itemCount: contacts.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: Icon(Icons.group),
-                      title: Text(contacts[index]['name']!),
-                      subtitle: Text(contacts[index]['number']!),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          setState(() {
-                            contacts.removeAt(index);
-                          });
-                        },
-                      ),
+                  return ListTile(
+                    leading: Icon(Icons.group),
+                    title: Text(contacts[index]['name']!),
+                    subtitle: Text(contacts[index]['number']!),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () => _showDeleteDialog(index),
                     ),
                   );
                 },
